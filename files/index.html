@@ -22,13 +22,13 @@ async function check(location) {
 async function apicreate() {
 	let name=document.getElementById("name").value
 	let content=document.getElementById("content").value
-  const response = await fetch("http://localhost:8081/api/create",{method:'POST',body:'{"Name":"'+name+'","Content":"'+content+'"}'});
+  const response = await fetch("http://"+location.hostname+":"+location.port+"/api/create",{method:'POST',body:'{"Name":"'+name+'","Content":"'+content+'"}'});
   const movies = await response.json();
   console.log(movies);
 }
 async function apiread() {
 	let name=document.getElementById("name").value
-  const response = await fetch("http://localhost:8081/api/read",{method:'POST',body:'{"name":"'+name+'"}'});
+  const response = await fetch("http://"+location.hostname+":"+location.port+"/api/read?name="+name,{method:'GET'});
   const movies = await response.json();
 	if (movies.Content!=undefined){
 		let content=document.getElementById("content").value=movies.Content
@@ -38,13 +38,13 @@ async function apiread() {
 async function apiupdate() {
 	let name=document.getElementById("name").value
 	let content=document.getElementById("content").value
-  const response = await fetch("http://localhost:8081/api/update",{method:'POST',body:'{"name":"'+name+'","content":"'+content+'"}'});
+  const response = await fetch("http://"+location.hostname+":"+location.port+"/api/update",{method:'PUT',body:'{"name":"'+name+'","content":"'+content+'"}'});
   const movies = await response.json();
   console.log(movies);
 }
 async function apidelet() {
 	let name=document.getElementById("name").value
-  const response = await fetch("http://localhost:8081/api/delete",{method:'POST',body:'{"name":"'+name+'"}'});
+  const response = await fetch("http://"+location.hostname+":"+location.port+"/api/delete?name="+name,{method:'DELETE'});
   const movies = await response.json();
   console.log(movies);
 }

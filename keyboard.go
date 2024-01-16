@@ -4,7 +4,7 @@ import(
 "atomicgo.dev/keyboard"
 "atomicgo.dev/keyboard/keys"
 )
-func Interactive(){
+func (C *Container)Interactive(){
 	fmt.Println("X")
 	keyboard.Listen(func(key keys.Key) (stop bool, err error) {
 	switch key.Code{
@@ -15,7 +15,7 @@ func Interactive(){
 		case "q","Q","x","X":
 			return true, nil
 		case "i","I":
-			fmt.Println(C)
+			fmt.Println(*C)
 	}
 	
 	return false, nil

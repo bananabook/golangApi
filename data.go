@@ -9,29 +9,31 @@ var (
 	ErrNotFound error=errors.New("not found")
 	ErrAlreadyExists error=errors.New("already exists")
 )
+var C Container
 type Container []Entry
 type Entry struct{
 	Name string
 	Content string
 }
-func init(){
+func (C *Container)StartSync()(error){
 	f,e:=os.OpenFile("backup.gob",os.O_RDWR,0700)
-	if h(e){ return }
+	if h(e){ return nil}
 	e=gob.NewDecoder(f).Decode(&C)
-	if h(e){ return }
+	if h(e){ return nil}
+	return nil
 }
-func EndSync(){
+func (C Container)EndSync(){
 	f,e:=os.OpenFile("backup.gob",os.O_RDWR|os.O_CREATE,0700)
 	if h(e){ return }
 	E:=gob.NewEncoder(f)
 	e=E.Encode(C)
 	if h(e){ return }
 }
-var C Container
-func (c *Container)String()string{
+//var C Container
+func (C *Container)String()string{
 	var out string
 	var first bool=true
-	for _,v:=range *c{
+	for _,v:=range *C{
 		if first{
 			first=false
 		}else{
@@ -41,7 +43,7 @@ func (c *Container)String()string{
 	}
 	return out
 }
-func (c *Container)Create(entry Entry)(error){
+func (C *Container)Create(entry Entry)(error){
 	_,e:=C.Read(entry.Name)
 	if e!=nil&&e!=ErrNotFound{
 		return e
@@ -49,23 +51,23 @@ func (c *Container)Create(entry Entry)(error){
 	if e==nil{
 		return ErrAlreadyExists
 	}
-	C=append(C,entry)
+	*C=append(*C,entry)
 	return nil
 }
-func (c *Container)Read(name string)(*Entry, error){
-	for _,v:=range *c{
+func (C *Container)Read(name string)(*Entry, error){
+	for _,v:=range *C{
 		if name==v.Name{
 			return &v,nil
 		}
 	}
 	return nil,ErrNotFound
 }
-func (c *Container)Update(entry Entry)(error){
+func (C *Container)Update(entry Entry)(error){
 	//finding,e:=c.Read(entry.Name)
 	i:=0
 	var found bool
-	for ;i<len(*c);i++{
-		v:=(*c)[i]
+	for ;i<len(*C);i++{
+		v:=(*C)[i]
 		if v.Name==entry.Name{
 			found=true
 		}
@@ -77,16 +79,16 @@ func (c *Container)Update(entry Entry)(error){
 	//if e!=nil{
 	//	return e
 	//}
-	(*c)[i].Content=entry.Content
+	(*C)[i].Content=entry.Content
 	//finding.Content=entry.Content
 	return nil
 }
-func (c *Container)Delete(entry Entry)(error){
+func (C *Container)Delete(entry string)(error){
 	var i int
 	var found bool
-	for ;i<len(*c);i++{
-		v:=(*c)[i]
-		if v.Name==entry.Name{
+	for ;i<len(*C);i++{
+		v:=(*C)[i]
+		if v.Name==entry{
 			found=true
 			break
 		}
@@ -94,6 +96,6 @@ func (c *Container)Delete(entry Entry)(error){
 	if !found{
 		return ErrNotFound
 	}
-	*c=append((*c)[:i],(*c)[i+1:]...)
+	*C=append((*C)[:i],(*C)[i+1:]...)
 	return nil
 }
