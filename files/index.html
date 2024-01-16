@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+	
+<head>
+	<title> Buttons </title>
+</head>
+<body>
+	<input id="name" type="text"></input>
+	<br>
+	<input id="content" type="text"></input>
+	<br><br>
+	<button onclick="check('')"> check </button>
+	<button onclick="apicreate()"> create </button>
+	<button onclick="apiread()"> read </button>
+	<button onclick="apiupdate()"> update </button>
+	<button onclick="apidelet()"> delete </button>
+<script>
+async function check(location) {
+  const response = await fetch("http://localhost:8081/api/"+location);
+  const movies = await response.json();
+  console.log(movies);
+}
+async function apicreate() {
+	let name=document.getElementById("name").value
+	let content=document.getElementById("content").value
+  const response = await fetch("http://localhost:8081/api/create",{method:'POST',body:'{"Name":"'+name+'","Content":"'+content+'"}'});
+  const movies = await response.json();
+  console.log(movies);
+}
+async function apiread() {
+	let name=document.getElementById("name").value
+  const response = await fetch("http://localhost:8081/api/read",{method:'POST',body:'{"name":"'+name+'"}'});
+  const movies = await response.json();
+	if (movies.Content!=undefined){
+		let content=document.getElementById("content").value=movies.Content
+	}
+  console.log(movies);
+}
+async function apiupdate() {
+	let name=document.getElementById("name").value
+	let content=document.getElementById("content").value
+  const response = await fetch("http://localhost:8081/api/update",{method:'POST',body:'{"name":"'+name+'","content":"'+content+'"}'});
+  const movies = await response.json();
+  console.log(movies);
+}
+async function apidelet() {
+	let name=document.getElementById("name").value
+  const response = await fetch("http://localhost:8081/api/delete",{method:'POST',body:'{"name":"'+name+'"}'});
+  const movies = await response.json();
+  console.log(movies);
+}
+
+</script>
+</body>
